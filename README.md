@@ -4,11 +4,11 @@ Practical submission for containerizing a Spring Boot CRUD microservice with Doc
 
 ## Build and run
 
-From the repository root:
+From the repository root, start the complete project with the question-specific Compose file:
 
 ```bash
-docker compose up --build -d
-docker compose ps
+docker compose -f docker-compose.containerization-practical.yml up --build -d
+docker compose -f docker-compose.containerization-practical.yml ps
 ```
 
 Compose waits for PostgreSQL's health check before starting the service. The first Maven build downloads dependencies and may take a few minutes.
@@ -40,10 +40,10 @@ Example request body: `{"name":"Item name","description":"Optional details"}`. T
 
 ## Docker commands
 
-The root Dockerfile uses a Maven build stage to package the executable JAR, then copies only that JAR into a Java 17 runtime image.
+`Dockerfile.containerization-practical` uses a Maven build stage to package the executable JAR, then copies only that JAR into a Java 17 runtime image.
 
 ```bash
-docker build -t soa-2400030583-crud-service .
+docker build -f Dockerfile.containerization-practical -t soa-2400030583-crud-service .
 docker run --rm -p 8080:8081 soa-2400030583-crud-service
 ```
 
@@ -57,7 +57,7 @@ docker pull ghcr.io/msrishanth583/2400030583-soaendsemskill:latest
 
 The published image contains the API service. PostgreSQL is a separate service, so use the Compose file to run the complete stack locally.
 
-Stop the stack with `docker compose down`. Data is stored in the named `postgres_data` volume and remains after stopping the containers. Remove the volume too with `docker compose down -v`.
+Stop the stack with `docker compose -f docker-compose.containerization-practical.yml down`. Data is stored in the named `postgres_data` volume and remains after stopping the containers. Remove the volume too with `docker compose -f docker-compose.containerization-practical.yml down -v`.
 
 ## Architecture
 

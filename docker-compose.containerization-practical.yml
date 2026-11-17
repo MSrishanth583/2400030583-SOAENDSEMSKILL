@@ -27,7 +27,7 @@ services:
     container_name: soa-2400030583-crud-service
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.containerization-practical
     ports:
       - "8080:8081"
     environment:
