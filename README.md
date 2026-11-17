@@ -49,6 +49,14 @@ docker run --rm -p 8080:8081 soa-2400030583-crud-service
 
 The standalone `docker run` command needs a reachable PostgreSQL database. For the complete application and database stack, use Docker Compose as described above.
 
+Every push to `main` also runs the GitHub Actions workflow in `.github/workflows/publish-image.yml`. After it succeeds, the image is published to GitHub Container Registry:
+
+```bash
+docker pull ghcr.io/msrishanth583/2400030583-soaendsemskill:latest
+```
+
+The published image contains the API service. PostgreSQL is a separate service, so use the Compose file to run the complete stack locally.
+
 Stop the stack with `docker compose down`. Data is stored in the named `postgres_data` volume and remains after stopping the containers. Remove the volume too with `docker compose down -v`.
 
 ## Architecture
