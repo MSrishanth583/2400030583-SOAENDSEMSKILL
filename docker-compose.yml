@@ -1,0 +1,52 @@
+name: soa-2400030583
+
+services:
+  postgresdb:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    container_name: soa-2400030583-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: soa_db
+      POSTGRES_USER: soa_user
+      POSTGRES_PASSWORD: soa_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soa_user -d soa_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - soa-network
+
+  crud-service:
+    image: soa-2400030583-crud-service:latest
+    platform: linux/amd64
+    container_name: soa-2400030583-crud-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/soa_db
+      SPRING_DATASOURCE_USERNAME: soa_user
+      SPRING_DATASOURCE_PASSWORD: soa_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - soa-network
+
+volumes:
+  postgres_data:
+    name: soa-2400030583-postgres-data
+
+networks:
+  soa-network:
+    name: soa-2400030583-network
+    driver: bridge
